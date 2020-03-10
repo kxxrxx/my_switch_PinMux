@@ -56,9 +56,9 @@ PortFunctionInit(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     //
-    // Enable pin PF2 for GPIOOutput
+    // Enable pin PF1 for GPIOOutput
     //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
 
     //
     // Enable pin PF0 for GPIOInput
@@ -99,11 +99,11 @@ int main(void)
 
 			if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00)	//SW2 is pressed
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00); // red LED is off
+					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00); // red LED is off
 			}
 			else
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x02); // red LED is on
+					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02); // red LED is on
 			}
     }
 }
