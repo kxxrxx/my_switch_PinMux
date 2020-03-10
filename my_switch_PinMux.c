@@ -35,16 +35,16 @@
 //
 //*****************************************************************************
 
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h>	// variable definitions for the C99 standard
+#include <stdbool.h>	// Boolean definitions for the C99 standard
 #include "switch_PinMux.h"
-#include "inc/hw_types.h"
-#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"	// Defines common types and macros
+#include "inc/hw_memmap.h"	// Macros defining the memory map of the Tiva C Series device. This includes defines such as peripheral base address locations such as GPIO_PORTF_BASE.
 #include "inc/hw_gpio.h"
-#include "driverlib/sysctl.h"
+#include "driverlib/sysctl.h"	// Defines and macros for System Control API of DriverLib
 #include "driverlib/pin_map.h"
-#include "driverlib/gpio.h"
-#include "inc/tm4c123gh6pm.h"	//manually added by the programmer
+#include "driverlib/gpio.h"	// Defines and macros for GPIO API of DriverLib. This includes API functions such as GPIOPinRead and GPIOPinWrite.
+#include "inc/tm4c123gh6pm.h"	// manually added by the programmer
 
 //*****************************************************************************
 void
