@@ -99,11 +99,11 @@ int main(void)
 
 			if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00)	//SW2 is pressed
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x04);
+					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00); // red LED is off
 			}
 			else
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x02); // red LED is on
 			}
     }
 }
