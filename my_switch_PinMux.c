@@ -1,5 +1,5 @@
-#include <stdint.h>	// variable definitions for the C99 standard
-#include <stdbool.h>	// Boolean definitions for the C99 standard
+#include <stdint.h>		// variable definitions for the C99 standard
+#include <stdbool.h>		// Boolean definitions for the C99 standard
 #include "switch_PinMux.h"
 #include "inc/hw_types.h"	// Defines common types and macros
 #include "inc/hw_memmap.h"	// Macros defining the memory map of the Tiva C Series device. This includes defines such as peripheral base address locations such as GPIO_PORTF_BASE.
@@ -51,8 +51,8 @@ PortFunctionInit(void)
 int main(void)
 {
 	
-		//initialize the GPIO ports	
-		PortFunctionInit();
+    //initialize the GPIO ports	
+    PortFunctionInit();
 	
     //
     // Loop forever.
@@ -60,13 +60,13 @@ int main(void)
     while(1)
     {
 
-			if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00)	//SW2 is pressed
+			if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00)	 //SW2 is pressed
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00); // red LED is off
+				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00); // red LED is off
 			}
 			else
 			{
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02); // red LED is on
+				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02); // red LED is on
 			}
     }
 }
