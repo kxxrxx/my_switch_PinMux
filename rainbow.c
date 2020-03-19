@@ -46,11 +46,11 @@
 #include "driverlib/gpio.h"
 #include "inc/tm4c123gh6pm.h"
 
-#define user_button1      	GPIO_PIN_0
-#define user_button2      	GPIO_PIN_4
-#define red_LED           	GPIO_PIN_1
-#define blue_LED          	GPIO_PIN_2
-#define green_LED	  	GPIO_PIN_3
+#define SW1	     		GPIO_PIN_4			// PF4
+#define SW2      		GPIO_PIN_0			// PF0
+#define red_LED           	GPIO_PIN_1			// 0x02
+#define blue_LED          	GPIO_PIN_2			// 0x04
+#define green_LED		GPIO_PIN_3			// 0x08
 
 //*****************************************************************************
 void
@@ -62,10 +62,6 @@ PortFunctionInit(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     //
-    // Enable pin PF0 for GPIOInput
-    //
-
-    //
     //First open the lock and select the bits we want to modify in the GPIO commit register.
     //
     HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
@@ -74,120 +70,125 @@ PortFunctionInit(void)
     //
     //Now modify the configuration of the pins that we unlocked.
     //
-    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0);
+	
+    //
+    // Enable pin PF0 for GPIOInput
+    //
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, SW2);
 
     //
     // Enable pin PF3 for GPIOOutput
     //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, green_LED);
 
     //
     // Enable pin PF4 for GPIOInput
     //
-    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, SW1);
 
     //
     // Enable pin PF1 for GPIOOutput
     //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, red_LED);
 
     //
     // Enable pin PF2 for GPIOOutput
     //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, blue_LED);
 
 
 // ****** Initialized by PinMux Utility *************** 
 	
-// enable pullup resistors on PF4,PF0
-  GPIO_PORTF_PUR_R |= 0x11;        
+    // enable pullup resistors using bitwise OR of PF4(0x10), PF0(0x01)
+    GPIO_PORTF_PUR_R |= 0x11;        
 
 }
 	
+
 int main(void)
 {
 	
      //initialize the GPIO ports	
      PortFunctionInit();
 	
-     signed char s = 0;
-     // setup_GPIOs();
+     signed char c = 0;
      while(1)
      {
-          if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4)==0x00) //SW1 is pressed
+          if(GPIOPinRead(GPIO_PORTF_BASE, SW2)==0x00) //SW2 is pressed
           {
-              while(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4)==0x00); //SW1 is pressed
-              s++;
+              while(GPIOPinRead(GPIO_PORTF_BASE, SW2)==0x00); //SW2 is pressed
+              c++;
           }
-          if(s > 7)
+          if(c > 7)
           {
-              s = 0;
+              c = 0;
           }
-          if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00) //SW2 is pressed
+          if(GPIOPinRead(GPIO_PORTF_BASE, SW1)==0x00) //SW1 is pressed
           {
-              while(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)==0x00); //SW2 is pressed
-              s--;
+              while(GPIOPinRead(GPIO_PORTF_BASE, SW1)==0x00); //SW1 is pressed
+              c--;
           }
-          if(s < 0)
+          if(c < 0)
           {
-              s = 7;
+              c = 7;
           }
-          switch(s)
+          
+	  switch(c)
           {
-              case 1:
+              case 1: // red
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x02);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x00);
                   break;
               }
-              case 2:
+              case 2: // green
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x08);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x08);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x00);
                   break;
               }
-              case 3:
+              case 3: // blue
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x04);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x04);
                   break;
               }
-              case 4:
+              case 4: // yellow
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x08);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x02);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x08);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x00);
                   break;
               }
-              case 5:
+              case 5: // pink
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x04);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x02);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x04);
                   break;
               }
-              case 6:
+              case 6: // cyan
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x08);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x04);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x08);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x04);
                   break;
               }
-              case 7:
+              case 7: // off
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x00);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x00);
                   break;
               }
-              default:
+              default: // white
               {
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x02);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x08);
-                  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x04);
+                  GPIOPinWrite(GPIO_PORTF_BASE, red_LED, 0x02);
+                  GPIOPinWrite(GPIO_PORTF_BASE, green_LED, 0x08);
+                  GPIOPinWrite(GPIO_PORTF_BASE, blue_LED, 0x04);
                   break;
               }
           }
