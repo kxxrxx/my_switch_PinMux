@@ -44,12 +44,13 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/gpio.h"
+#include "inc/tm4c123gh6pm.h"
 
-#define user_button1      GPIO_PIN_0
-#define user_button2      GPIO_PIN_4
-#define red_LED           GPIO_PIN_1
-#define blue_LED          GPIO_PIN_2
-#define green_LED					GPIO_PIN_3
+#define user_button1      	GPIO_PIN_0
+#define user_button2      	GPIO_PIN_4
+#define red_LED           	GPIO_PIN_1
+#define blue_LED          	GPIO_PIN_2
+#define green_LED	  	GPIO_PIN_3
 
 //*****************************************************************************
 void
@@ -94,14 +95,20 @@ PortFunctionInit(void)
     // Enable pin PF2 for GPIOOutput
     //
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
-}
 
-// void setup_GPIOs();
+
+// ****** Initialized by PinMux Utility *************** 
+	
+// enable pullup resistors on PF4,PF0
+  GPIO_PORTF_PUR_R |= 0x11;        
+
+}
+	
 int main(void)
 {
 	
-		 //initialize the GPIO ports	
-		 PortFunctionInit();
+     //initialize the GPIO ports	
+     PortFunctionInit();
 	
      signed char s = 0;
      // setup_GPIOs();
@@ -186,19 +193,3 @@ int main(void)
           }
      }
 }
-//void setup_GPIOs()
-//{
-//     delay_ms(2000);
-//     GPIO_Clk_Enable(&GPIO_PORTF);
-//     GPIO_Unlock(_GPIO_COMMIT_PIN_F0);
-//     GPIO_Config(&GPIO_PORTF,
-//                 (_GPIO_PINMASK_0 | _GPIO_PINMASK_4),
-//                 _GPIO_DIR_INPUT,
-//                 (_GPIO_CFG_PULL_UP | _GPIO_CFG_DIGITAL_ENABLE),
-//                 _GPIO_PINCODE_NONE);
-//     GPIO_Config(&GPIO_PORTF,
-//                 (_GPIO_PINMASK_1 | _GPIO_PINMASK_2 | _GPIO_PINMASK_3),
-//                 _GPIO_DIR_OUTPUT,
-//                 (_GPIO_CFG_DIGITAL_ENABLE | _GPIO_CFG_DRIVE_8mA),
-//                 _GPIO_PINCODE_NONE);
-//}
